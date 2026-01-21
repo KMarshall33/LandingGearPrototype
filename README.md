@@ -39,7 +39,7 @@ These limitations are deliberate and reflect the goals of a functional prototype
 
 ```
 .
-├── LandingGear.py          # Core prototype implementation
+├── landing_gear.py         # Core prototype implementation
 ├── tests/                  # Automated tests (pytest)
 ├── .github/
 │   └── workflows/
@@ -54,7 +54,7 @@ These limitations are deliberate and reflect the goals of a functional prototype
 To run the prototype locally:
 
 ```bash
-python LandingGear.py
+python landing_gear.py
 ```
 
 This will execute a simple demonstration of the landing gear control logic and log state transitions to the console.
