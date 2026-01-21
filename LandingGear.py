@@ -21,5 +21,7 @@ class LandingGearController:
         else:
             self.log("Command rejected")
 
-controller = LandingGearController()
-controller.command_gear_down()
+
+if __name__ == "__main__":
+    controller = LandingGearController()
+    controller.command_gear_down()
