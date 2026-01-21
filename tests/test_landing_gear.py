@@ -1,4 +1,4 @@
-from LandingGear import LandingGearController, GearState
+from landing_gear import LandingGearController, GearState
 
 def test_initial_state_is_up_locked():
   controller = LandingGearController()
