@@ -6,7 +6,7 @@ Description:
     commands and time ticks.
 
 Author: Kyle Rothery
-Date: 21-01-2026
+Date: 22-01-2026
 
 Requirements:
     FR1: The landing gear shall initialize in the UP_LOCKED state.
@@ -22,12 +22,18 @@ Requirements:
 
 Change Log:
 - 21-01-2026: Initial prototype implementation
+- 22-01-2026: Added tick-based state transition logic
+- 22-01-2026: Added hydraulic pressure check before gear deployment
+- 22-01-2026: Implemented detaliled logging
 """
 
 from enum import Enum, auto
+import logging
 
 # Number of ticks required to deploy the landing gear
 DEPLOY_TICKS = 3
+
+LOGGER = logging.getLogger(__name__)
 
 class GearState(Enum):
     UP_LOCKED = auto()
@@ -38,10 +44,10 @@ class LandingGearController:
     def __init__(self):
         self.state = GearState.UP_LOCKED
         self._deploy_ticks_remaining = 0
-        self.hydraulic_pressure_ok = True
+        self.hydraulic_pressure_ok = False
     
     def log(self, message):
-        print(f"[{self.state.name}] {message}")
+        LOGGER.info("[%s] %s", self.state.name, message)
 
     def command_gear_down(self):
         self.log("Command received: Gear Down")
@@ -85,6 +91,11 @@ class LandingGearController:
 if __name__ == "__main__":
     controller = LandingGearController()
     controller.command_gear_down()
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     for _ in range(DEPLOY_TICKS):
         import time
