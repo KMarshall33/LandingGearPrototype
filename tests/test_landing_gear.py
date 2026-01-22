@@ -22,5 +22,17 @@ def test_gear_locks_after_three_ticks():
   controller.tick()
   controller.tick()
   controller.tick()
-  
+
   assert controller.state == GearState.DOWN_LOCKED
+
+def test_command_gear_down_is_rejected_when_hydraulic_pressure_not_ok():
+  controller = LandingGearController()
+  controller.hydraulic_pressure_ok = False
+  controller.command_gear_down()
+  assert controller.state == GearState.UP_LOCKED
+
+def test_command_gear_down_is_accepted_when_hydraulic_pressure_ok():
+  controller = LandingGearController()
+  controller.hydraulic_pressure_ok = True
+  controller.command_gear_down()
+  assert controller.state == GearState.TRANSITIONING_DOWN
