@@ -89,15 +89,16 @@ class LandingGearController:
 
 
 if __name__ == "__main__":
-    controller = LandingGearController()
-    controller.command_gear_down()
+    import time
 
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+    )    
+    
+    controller = LandingGearController()
+    controller.command_gear_down()
 
     for _ in range(DEPLOY_TICKS):
-        import time
         controller.tick()
         time.sleep(1)  # Simulate time delay between ticks
