@@ -38,6 +38,7 @@ class LandingGearController:
     def __init__(self):
         self.state = GearState.UP_LOCKED
         self._deploy_ticks_remaining = 0
+        self.hydraulic_pressure_ok = True
     
     def log(self, message):
         print(f"[{self.state.name}] {message}")
@@ -45,6 +46,10 @@ class LandingGearController:
     def command_gear_down(self):
         self.log("Command received: Gear Down")
         if self.state == GearState.UP_LOCKED:
+            if not self.hydraulic_pressure_ok:
+                self.log("Cannot deploy gear: Hydraulic pressure not OK")
+                return
+            
             self.state = GearState.TRANSITIONING_DOWN
             self._deploy_ticks_remaining = DEPLOY_TICKS
             self.log(f"Gear deploying initiated"
