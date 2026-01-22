@@ -44,7 +44,7 @@ class LandingGearController:
     def __init__(self):
         self.state = GearState.UP_LOCKED
         self._deploy_ticks_remaining = 0
-        self.hydraulic_pressure_ok = False
+        self.hydraulic_pressure_ok = True
     
     def log(self, message):
         LOGGER.info("[%s] %s", self.state.name, message)
