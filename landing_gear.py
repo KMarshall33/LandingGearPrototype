@@ -6,7 +6,7 @@ Description:
     commands and time ticks.
 
 Author: Kyle Rothery
-Date: 22-01-2026
+Date: 25-01-2026
 
 Requirements:
     FR1: The landing gear shall initialize in the UP_LOCKED state.
@@ -25,6 +25,8 @@ Change Log:
 - 22-01-2026: Added tick-based state transition logic
 - 22-01-2026: Added hydraulic pressure check before gear deployment
 - 22-01-2026: Implemented detaliled logging
+- 24-01-2026: Expanded test suite for edge cases
+- 25-01-2026: Added type hints and code comments
 """
 
 from enum import Enum, auto
@@ -41,15 +43,21 @@ class GearState(Enum):
     DOWN_LOCKED = auto()
 
 class LandingGearController:
-    def __init__(self):
+    def __init__(self) -> None:
+        # Initialize the landing gear controller in the UP_LOCKED state
         self.state = GearState.UP_LOCKED
-        self._deploy_ticks_remaining = 0
-        self.hydraulic_pressure_ok = True
+
+        # Remaining ticks for gear deployment
+        self._deploy_ticks_remaining: int = 0
+
+        # Prototype constraint condition. If False, gear cannot be deployed.
+        self.hydraulic_pressure_ok: bool = True
     
-    def log(self, message):
+    def log(self, message: str) -> None:
+        # Centralised logging method for improved traceability
         LOGGER.info("[%s] %s", self.state.name, message)
 
-    def command_gear_down(self):
+    def command_gear_down(self) -> None:
         self.log("Command received: Gear Down")
         if self.state == GearState.UP_LOCKED:
             if not self.hydraulic_pressure_ok:
@@ -61,14 +69,18 @@ class LandingGearController:
             self.log(f"Gear deploying initiated"
                      f" with {self._deploy_ticks_remaining} ticks remaining"
             )
+        
+        # Duplicate commands during transition are ignored
         elif self.state == GearState.TRANSITIONING_DOWN:
             self.log("Gear is already deploying")
         elif self.state == GearState.DOWN_LOCKED:
             self.log("Gear is already down and locked")
+
+        # Catch-all else for future states
         else:
             self.log("Gear command ignored in current state")
 
-    def tick(self):
+    def tick(self) -> None:
         """
         Simulate a time tick for the landing gear controller.
 
@@ -76,9 +88,12 @@ class LandingGearController:
         counts down ticks until the gear reaches the DOWN_LOCKED state.
         """
         if self.state != GearState.TRANSITIONING_DOWN:
+            # Ignore ticks if not transitioning
             self.log("Tick received but gear is not deploying")
             return
         
+        # Deterministic countdown for gear deployment. When ticks reach zero,
+        # the gear locks down.
         if self._deploy_ticks_remaining > 0:
             self._deploy_ticks_remaining -= 1
             self.log(f"Tick: {self._deploy_ticks_remaining} ticks remaining for gear deployment")
@@ -101,4 +116,5 @@ if __name__ == "__main__":
 
     for _ in range(DEPLOY_TICKS):
         controller.tick()
-        time.sleep(1)  # Simulate time delay between ticks
+        # Simulate time delay between ticks
+        time.sleep(1)
